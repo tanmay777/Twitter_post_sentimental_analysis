@@ -88,7 +88,7 @@ def main():
     #creating object of TwitterClient class
     api=TwitterClient()
     #calling function to get the tweets
-    tweets = api.get_tweets(query='srk', count=200)
+    tweets = api.get_tweets(query='IndianCooperative', count=200)
 
     #picking positive tweets from the tweets
     ptweets= [tweet for tweet in tweets if tweet['sentiment']=='positive']
@@ -96,6 +96,8 @@ def main():
     print ("positive tweets percentage: {} %".format(100*len(ptweets)/len(tweets)))
     #picking negative tweets from the tweets
     ntweets= [tweet for tweet in tweets if tweet['sentiment']=='negative']
+    #picking neutral tweets from the tweets
+    neutral_tweets= [tweet for tweet in tweets if tweet['sentiment']=='neutral']
     #percentage of negative tweets
     print ("negative tweets percentage: {} %".format(100*len(ntweets)/len(tweets)))
     #percentage of neutral tweets
@@ -111,6 +113,26 @@ def main():
     for tweet in ntweets[:10]:
         print("->"+tweet['text'])
 
+    print("\n\nNeutral tweets:")
+    for tweet in neutral_tweets[:10]:
+        print("->"+tweet['text'])
+
 if __name__=="__main__":
     #calling main function
     main()
+
+'''
+TextBlob is actually a high level library built over top of NLTK library. First we call clean_tweet method to remove links, special characters, etc. from the tweet using some simple regex.
+Then, as we pass tweet to create a TextBlob object, following processing is done over text by textblob library:
+
+Tokenize the tweet ,i.e split words from body of text.
+Remove stopwords from the tokens.(stopwords are the commonly used words which are irrelevant in text analysis like I, am, you, are, etc.)
+Do POS( part of speech) tagging of the tokens and select only significant features/tokens like adjectives, adverbs, etc.
+Pass the tokens to a sentiment classifier which classifies the tweet sentiment as positive, negative or neutral by assigning it a polarity between -1.0 to 1.0 .
+Here is how sentiment classifier is created:
+
+TextBlob uses a Movies Reviews dataset in which reviews have already been labelled as positive or negative.
+Positive and negative features are extracted from each positive and negative review respectively.
+Training data now consists of labelled positive and negative features. This data is trained on a Naive Bayes Classifier.
+Then, we use sentiment.polarity method of TextBlob class to get the polarity of tweet between -1 to 1
+'''
