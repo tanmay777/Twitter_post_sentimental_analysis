@@ -42,6 +42,7 @@ class TwitterClient(object):
         '''
         #create TextBlob object of passed tweet text
         analysis=TextBlob(self.clean_tweet(tweet))
+        analysis=analysis.correct()
         # set sentiment
         if analysis.sentiment.polarity > 0:
             return 'positive'
@@ -60,7 +61,6 @@ class TwitterClient(object):
         try:
             #call twitter api to fetch tweets
             fetched_tweets=self.api.search(q=query,count=count)
-
             #parsing the tweets one by one
             for tweet in fetched_tweets:
                 #empty dictionary to store required params of a tweet
@@ -87,8 +87,9 @@ class TwitterClient(object):
 def main():
     #creating object of TwitterClient class
     api=TwitterClient()
+    query=raw_input("Enter the query: ");
     #calling function to get the tweets
-    tweets = api.get_tweets(query='IndianCooperative', count=200)
+    tweets = api.get_tweets(query=query, count=200)
 
     #picking positive tweets from the tweets
     ptweets= [tweet for tweet in tweets if tweet['sentiment']=='positive']
@@ -116,7 +117,6 @@ def main():
     print("\n\nNeutral tweets:")
     for tweet in neutral_tweets[:10]:
         print("->"+tweet['text'])
-
 if __name__=="__main__":
     #calling main function
     main()
